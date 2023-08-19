@@ -1,5 +1,14 @@
-<script setup lang="ts">
+<script>
 import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
+
+export default{
+    methods:{
+        async logout(){
+            const user = await logout();
+            console.log(user);
+        }
+    }
+}
 </script>
 
 <template>
@@ -36,7 +45,7 @@ import { UserIcon, MailIcon, ListCheckIcon } from 'vue-tabler-icons';
                 </v-list-item>
             </v-list>
             <div class="pt-4 pb-4 px-5 text-center">
-                <v-btn to="/auth/login" color="primary" variant="outlined" block>Logout</v-btn>
+                <v-btn @click="logout" color="primary" variant="outlined" block>Logout</v-btn>
             </div>
         </v-sheet>
     </v-menu>
