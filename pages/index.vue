@@ -8,14 +8,15 @@ import ProductPerformance from '@/components/dashboard/ProductPerformance.vue';
 import ProductCards from '@/components/dashboard/ProductCards.vue';
 
 definePageMeta({
-    middleware:'auth'
+    middleware:['auth']
 })
 
+const firebaseUser = userFirebaseUser();
 </script>
 <template>
     <v-row>
         <v-col cols="12">
-    
+    Welcome Back {{ firebaseUser.email }}
         </v-col>
     </v-row>
 </template>

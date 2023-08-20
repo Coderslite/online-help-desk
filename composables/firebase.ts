@@ -3,6 +3,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   onAuthStateChanged,
+  User,
 } from "firebase/auth";
 
 import {
@@ -16,6 +17,7 @@ import {
 } from "firebase/firestore/lite";
 
 import { initializeApp } from "firebase/app";
+import { isLogin } from "./useState";
 
 // const config = useRuntimeConfig();
 const firebaseConfig = {
@@ -32,11 +34,28 @@ const db = getFirestore(app);
 
 const auth = getAuth(app);
 
-const user = ref(auth.currentUser);
 
-auth.onAuthStateChanged((_user) => {
-  user.value = _user;
-});
+
+export const initUser =async ()=>{
+  const firebaseUser = userFirebaseUser();
+  const userLogin = isLogin();
+  firebaseUser.value = auth.currentUser;
+  onAuthStateChanged(auth,(user)=>{
+    if(user){
+      userLogin.value =true
+      localStorage.setItem('isLogin','true');
+    }
+    else{
+      console.log("auth changed",user)
+      userLogin.value =false
+      localStorage.setItem('isLogin','false');
+    }
+    firebaseUser.value =user;
+    console.log("auth changed",user)
+
+})
+
+}
 
 export const registerUser = async (email: any, password: any, level: any) => {
   try {
@@ -47,7 +66,6 @@ export const registerUser = async (email: any, password: any, level: any) => {
       email,
       password
     );
-    user.value = userCredential.user;
     const userInfo = {
       email: email,
       password: password,
@@ -78,8 +96,7 @@ export const login = async (email: any, password: any) => {
       email,
       password
     );
-    user.value = userCredential.user;
-    console.log(user)
+    navigateTo('/')
     return userCredential.user;
   } catch (error) {
     throw error;
@@ -90,18 +107,10 @@ export const logout = async () => {
   try {
     console.log("logging out")
     await auth.signOut();
-    user.value = null;
     console.log("log out successful")
+    navigateTo('/auth/login')
   } catch (error) {
     throw error;
   }
 };
 
-export const isAuthenticated = () => {
-  const myuser = auth.currentUser;
-    console.log(myuser?.uid!== null)
-    console.log(myuser);
-    console.log(user)
-    return myuser?.uid !== null;
-  };
-  
