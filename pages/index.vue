@@ -12,11 +12,12 @@ definePageMeta({
 })
 
 const firebaseUser = userFirebaseUser();
+const email = userEmail();
 </script>
 <template>
     <v-row>
         <v-col cols="12">
-    Welcome Back {{ firebaseUser.email }}
+    Welcome Back {{ email }}
         </v-col>
     </v-row>
 </template>

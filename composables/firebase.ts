@@ -17,7 +17,7 @@ import {
 } from "firebase/firestore/lite";
 
 import { initializeApp } from "firebase/app";
-import { isLogin } from "./useState";
+import { userEmail } from "./useState";
 
 // const config = useRuntimeConfig();
 const firebaseConfig = {
@@ -34,28 +34,26 @@ const db = getFirestore(app);
 
 const auth = getAuth(app);
 
-
-
-export const initUser =async ()=>{
+export const initUser = async () => {
   const firebaseUser = userFirebaseUser();
-  const userLogin = isLogin();
+  const loginEmail = userEmail();
+  const loginUid = uid();
   firebaseUser.value = auth.currentUser;
-  onAuthStateChanged(auth,(user)=>{
-    if(user){
-      userLogin.value =true
-      localStorage.setItem('isLogin','true');
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      localStorage.setItem("isLogin", "true");
+      loginEmail.value = user.email;
+      loginUid.value = user.uid;
+    } else {
+      console.log("auth changed", user);
+      localStorage.setItem("isLogin", "false");
+      loginEmail.value = "";
+      loginUid.value = "";
     }
-    else{
-      console.log("auth changed",user)
-      userLogin.value =false
-      localStorage.setItem('isLogin','false');
-    }
-    firebaseUser.value =user;
-    console.log("auth changed",user)
-
-})
-
-}
+    firebaseUser.value = user;
+    console.log("auth changed", user);
+  });
+};
 
 export const registerUser = async (email: any, password: any, level: any) => {
   try {
@@ -96,21 +94,22 @@ export const login = async (email: any, password: any) => {
       email,
       password
     );
-    navigateTo('/')
+    navigateTo("/");
     return userCredential.user;
   } catch (error) {
+    alert(error);
     throw error;
   }
 };
 
 export const logout = async () => {
   try {
-    console.log("logging out")
+    console.log("logging out");
     await auth.signOut();
-    console.log("log out successful")
-    navigateTo('/auth/login')
+    console.log("log out successful");
+    navigateTo("/auth/login");
   } catch (error) {
+    alert(error);
     throw error;
   }
 };
-

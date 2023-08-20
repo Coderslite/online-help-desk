@@ -1,2 +1,3 @@
 export const userFirebaseUser = ()=> useState<any>('firebaseUser',()=>{})
-export const isLogin = ()=> useState<any>('isLogin',()=> {})
+export const userEmail = ()=> useState<any>('userEmail',()=>'');
+export const uid = ()=> useState<string>('uid',()=>'');

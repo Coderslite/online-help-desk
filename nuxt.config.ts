@@ -18,6 +18,7 @@ export default defineNuxtConfig({
   devServerHandlers: [],
   hooks: {
   },
+
   app: {
     head: {
       link: [
