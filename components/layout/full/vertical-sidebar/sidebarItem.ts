@@ -1,7 +1,7 @@
 import {
     ApertureIcon,
     CopyIcon,
-    LayoutDashboardIcon, LoginIcon, MoodHappyIcon, TypographyIcon, UserPlusIcon
+    LayoutDashboardIcon, LoginIcon, MessageIcon, MoodHappyIcon, ReportIcon, TypographyIcon, UserPlusIcon
 } from 'vue-tabler-icons';
 
 export interface menu {
@@ -26,38 +26,16 @@ const sidebarItem: menu[] = [
         icon: LayoutDashboardIcon,
         to: '/'
     },
-    { header: 'utilities' },
+    { header: 'ticket' },
     {
-        title: 'Typography',
-        icon: TypographyIcon,
-        to: '/ui/typography'
+        title: 'Ticket',
+        icon: ReportIcon,
+        to: '/ticket/'
     },
     {
-        title: 'Shadow',
-        icon: CopyIcon,
-        to: '/ui/shadow'
-    },
-    { header: 'auth' },
-    {
-        title: 'Login',
-        icon: LoginIcon,
-        to: '/auth/login'
-    },
-    {
-        title: 'Register',
-        icon: UserPlusIcon,
-        to: '/auth/register'
-    },
-    { header: 'Extra' },
-    {
-        title: 'Icons',
-        icon: MoodHappyIcon,
-        to: '/icons'
-    },
-    {
-        title: 'Sample Page',
-        icon: ApertureIcon,
-        to: '/sample-page'
+        title: 'Chat',
+        icon: MessageIcon,
+        to: '/chat'
     },
 ];
 

@@ -17,7 +17,7 @@ const email = userEmail();
 <template>
     <v-row>
         <v-col cols="12">
-    Welcome Back {{ email }}
+           Welcome Back {{ email }}
         </v-col>
     </v-row>
 </template>
