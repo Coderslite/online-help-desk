@@ -65,7 +65,7 @@ export default {
         async delTicket(ticketId) {
             try {
                 this.deleting = ticketId;
-                const ref = await deleteTicket(ticketId);
+                const ref = await deleteTicketAndSubcollections(ticketId);
                 this.getTicket()
             } catch (error) {
                 console.log(error);

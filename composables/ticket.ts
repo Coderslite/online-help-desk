@@ -9,11 +9,10 @@ import {
   addDoc,
   setDoc,
   updateDoc,
-  doc,
+  doc,  
 } from "firebase/firestore/lite";
 
 import { initializeApp } from "firebase/app";
-import { Timestamp } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcxuzMwl_j0ePCIZvTHv-JIlxs_SQjBMA",
@@ -84,18 +83,33 @@ export const createTicket = async (subject: any, message: any, course: any) => {
   return true;
 };
 
-export const deleteTicket = async (ticketId: string) => {
-  console.log("ticket id", ticketId);
+
+const deleteSubCollection = async (subCollectionRef:any) => {
+  const querySnapshot = await getDocs(subCollectionRef);
+
+  querySnapshot.forEach(async (docSnapshot) => {
+    const docRef = doc(subCollectionRef, docSnapshot.id);
+    await deleteDoc(docRef);
+  });
+};
+
+export const deleteTicketAndSubcollections = async (ticketId:any) => {
   try {
     const docRef = doc(db, "tickets", ticketId);
-    const ref = await deleteDoc(docRef);
-    console.log(ref);
-    return ref;
+
+    // Delete the target collection's documents
+    await deleteSubCollection(collection(docRef, "ticket_conversation"));
+
+    // Delete the target collection
+    await deleteDoc(docRef);
+
+    console.log("Ticket and its sub-collections deleted successfully");
   } catch (error) {
-    console.log(error);
-    return error;
+    console.error("Error deleting ticket and sub-collections", error);
   }
 };
+
+
 
 export const getTicketConversation = async (
   ticketId: string
