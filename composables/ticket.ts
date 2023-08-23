@@ -9,7 +9,8 @@ import {
   addDoc,
   setDoc,
   updateDoc,
-  doc,  
+  doc,
+  orderBy,  
 } from "firebase/firestore/lite";
 
 import { initializeApp } from "firebase/app";
@@ -32,7 +33,8 @@ export const getTickets = async () => {
   const userId = uid().value;
   const q = query(
     ticketCol,
-    where("userId", "==", "P8Ygf9YZKOXHQvyLtPH6jOiVHL23")
+    where("userId", "==", userId),
+    orderBy('dateTime')
   );
   const ticketsSnapshot = await getDocs(q);
   const ticketsList = ticketsSnapshot.docs.map((doc) => doc.data());
@@ -116,13 +118,17 @@ export const getTicketConversation = async (
 ): Promise<SubMessage[]> => {
   try {
     const subMessagesQuery = query(
-      collection(db, "tickets", ticketId, "ticket_conversation")
+      collection(db, "tickets", ticketId, "ticket_conversation"),
+      orderBy("createdAt") // Assuming "timestamp" is the field containing the time
     );
+    
     const subMessagesSnapshot = await getDocs(subMessagesQuery);
     const subMessages: SubMessage[] = [];
+    
     subMessagesSnapshot.forEach((doc) => {
       subMessages.push({ id: doc.id, ...doc.data() } as SubMessage);
     });
+    
     return subMessages;
   } catch (error) {
     console.error("Error fetching ticket conversation:", error);

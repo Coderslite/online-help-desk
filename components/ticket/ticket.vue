@@ -1,7 +1,7 @@
 <template>
-    <div class="p-3">
-        <h5 :class="message.userId!=uid().value? `badge-secondary`:`badge-primary`" style="display:inline">
-            {{ message.message }}</h5>
+    <div class="pb-1">
+        <p :class="message.userId!=uid().value? `badge-secondary p-1`:`badge-primary p-1`" style="display:inline">
+            {{ message.message }}</p>
         <small v-if="message.userId != userId"><i>sent by HOD</i></small>
     </div>
 </template>
