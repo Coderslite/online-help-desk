@@ -5,7 +5,7 @@
                 <h1 class="text-left">Ticket History</h1>
                 <div class="chat-container">
                     <div class="chat-messages">
-                        <div v-for="(message, index) in messages" :key="index" class="chat-message">
+                        <div v-for="(message, index) in messages" :key="message.id" class="chat-message">
                             <Ticket :message="message"
                                 :class="message.userId == uid().value ? `user-message` : `other-message`" />
                         </div>
@@ -43,19 +43,25 @@ export default {
         },
         async sendMessage() {
             try {
-                await sendMessageToTicket(this.ticketId,this.newMessage);
+                await sendMessageToTicket(this.ticketId, this.newMessage);
                 this.getConversation(this.ticketId)
-                this.newMessage =''
+                this.newMessage = ''
             } catch (error) {
                 alert(error)
             }
         }
     },
-    mounted() {
-        this.ticketId = useRoute().params.id
-        console.log("ticketID", this.ticketId)
-        this.getConversation(this.ticketId)
-    }
+    watch: {
+        '$route.params.id': {
+            handler(newId, oldId) {
+                this.ticketId = newId;
+                console.log("ticketID", this.ticketId);
+                this.getConversation(this.ticketId);
+            },
+            immediate: true // Trigger the handler immediately on component creation
+        }
+    },
+
 };
 </script>
   
