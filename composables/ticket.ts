@@ -7,10 +7,13 @@ import {
   Firestore,
   deleteDoc,
   addDoc,
+  setDoc,
+  updateDoc,
   doc,
 } from "firebase/firestore/lite";
 
 import { initializeApp } from "firebase/app";
+import { Timestamp } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyAcxuzMwl_j0ePCIZvTHv-JIlxs_SQjBMA",
@@ -51,13 +54,31 @@ export const createTicket = async (
     course,
     userId,
   };
-  console.log(data);
+
   const docRef = await addDoc(ticketCol, data);
-  console.log("Document written with ID:", docRef.id);
+  const docId = docRef.id; // Get the document ID
+  let dateTime = new Date();
+  console.log("Document written with ID:", docId);
+
+  // Add the document ID to the data
+  const dataWithId = {
+    ...data,
+    docId,
+    dateTime,
+  };
+  await updateDoc(docRef, dataWithId);
+  return true;
 };
 
 export const deleteTicket = async (ticketId: string) => {
-  const docRef = doc(db, "tickets", ticketId);
-  const ref = await deleteDoc(docRef);
-  return ref;
+  console.log("ticket id",ticketId)
+  try {
+    const docRef = doc(db, "tickets", ticketId);
+    const ref = await deleteDoc(docRef);
+    console.log(ref);
+    return ref;
+  } catch (error) {
+    console.log(error);
+    return error;
+  }
 };

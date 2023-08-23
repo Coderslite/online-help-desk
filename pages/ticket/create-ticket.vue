@@ -1,5 +1,6 @@
 <template>
-    <v-row class="d-flex mb-3">
+    <v-row class="d-flex mb-3 col-lg-6 mx-auto">
+        <h1>Create Tickets</h1>
         <v-col cols="12">
             <v-label class="font-weight-bold mb-1">Course</v-label>
             <v-select v-model="course" label="Course" :items="courses">
@@ -14,7 +15,10 @@
             <v-textarea variant="outlined" v-model="message" type="password" color="primary"></v-textarea>
         </v-col>
         <v-col cols="12" class="pt-0">
-            <v-btn color="primary" size="large" block flat @click="createTickets">Create Ticket</v-btn>
+            <v-btn color="primary" size="large" block flat @click="createTickets">
+                <div v-if="loading" class="spinner-border text-center d-flex" role="status">
+                            </div>
+                <span v-if="!loading">Create Ticket</span></v-btn>
         </v-col>
     </v-row>
 </template>
@@ -26,7 +30,8 @@ export default {
             subject: '',
             message: '',
             courses: ['English', 'Maths', 'Chemistry', 'Physics'],
-            course: ''
+            course: '',
+            loading:false,
 
         }
     }
@@ -34,9 +39,17 @@ export default {
     methods: {
         async createTickets() {
             try {
+                this.loading = true;
                 await createTicket(this.subject,this.message,this.course);
+                this.subject = '';
+                this.message = '';
+                this.course = '';
+                alert("Ticket Created")
             } catch (error) {
                 console.log(error);
+                alert(error)
+            }finally{
+                this.loading=false
             }
         }
     }

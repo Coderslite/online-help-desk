@@ -2,7 +2,6 @@
     <div class="container">
       <div class="row justify-content-center">
         <div class="col-md-8">
-            <Ticket/>
           <div class="chat-container">
             <div class="chat-messages">
               <div v-for="(message, index) in messages" :key="index" class="chat-message">
@@ -11,19 +10,17 @@
                 </span>
               </div>
             </div>
-         
-          </div>
-        </div>
-        <div class="chat-input col-md-8">
+            <div class="chat-input">
               <input v-model="newMessage" @keyup.enter="sendMessage" class="form-control" placeholder="Type a message..." />
               <button @click="sendMessage" class="btn btn-primary mt-2">Send</button>
             </div>
+          </div>
+        </div>
       </div>
     </div>
   </template>
   
   <script>
-  import Ticket from '@/components/ticket/ticket.vue'
   export default {
     data() {
       return {
