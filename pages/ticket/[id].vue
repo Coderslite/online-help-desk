@@ -1,98 +1,102 @@
 <template>
     <div class="container">
-      <div class="row justify-content-center">
-        <div class="col-md-8">
-            <Ticket/>
-          <div class="chat-container">
-            <div class="chat-messages">
-              <div v-for="(message, index) in messages" :key="index" class="chat-message">
-                <span :class="{'user-message': message.isUser, 'other-message': !message.isUser}">
-                  {{ message.text }}
-                </span>
-              </div>
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h1 class="text-left">Ticket History</h1>
+                <div class="chat-container">
+                    <div class="chat-messages">
+                        <div v-for="(message, index) in messages" :key="index" class="chat-message">
+                            <Ticket :message="message"
+                                :class="message.userId == uid().value ? `user-message` : `other-message`" />
+                        </div>
+                    </div>
+
+                </div>
             </div>
-         
-          </div>
+            <div class="chat-input col-md-8">
+                <input v-model="newMessage" @keyup.enter="sendMessage" class="form-control"
+                    placeholder="Type a message..." />
+                <button @click="sendMessage" class="btn btn-primary mt-2">Send</button>
+            </div>
         </div>
-        <div class="chat-input col-md-8">
-              <input v-model="newMessage" @keyup.enter="sendMessage" class="form-control" placeholder="Type a message..." />
-              <button @click="sendMessage" class="btn btn-primary mt-2">Send</button>
-            </div>
-      </div>
     </div>
-  </template>
+</template>
   
-  <script>
-  import Ticket from '@/components/ticket/ticket.vue'
-  export default {
+<script>
+import Ticket from '@/components/ticket/ticket.vue'
+export default {
     data() {
-      return {
-        messages: [
-          { text: "Hello!", isUser: false },
-          { text: "Hi there!", isUser: true },
-        ],
-        newMessage: "",
-      };
+        return {
+            messages: [],
+            newMessage: "",
+            ticketId: "",
+        };
     },
     methods: {
-      sendMessage() {
-        if (this.newMessage.trim() === "") return;
-  
-        this.messages.push({ text: this.newMessage, isUser: true });
-        this.newMessage = "";
-  
-        // Simulate a reply after a delay
-        setTimeout(() => {
-          this.messages.push({ text: "I'm good, how about you?", isUser: false });
-        }, 1000);
-      },
+        async getConversation(ticketId) {
+            try {
+                this.messages = await getTicketConversation(ticketId);
+                console.log("messages", this.messages)
+            } catch (error) {
+                console.log(error)
+            }
+        },
+        async sendMessage() {
+            try {
+                await sendMessageToTicket(this.ticketId,this.newMessage);
+                this.getConversation(this.ticketId)
+                this.newMessage =''
+            } catch (error) {
+                alert(error)
+            }
+        }
     },
-  };
-  </script>
+    mounted() {
+        this.ticketId = useRoute().params.id
+        console.log("ticketID", this.ticketId)
+        this.getConversation(this.ticketId)
+    }
+};
+</script>
   
-  <style scoped>
-  .chat-container {
+<style scoped>
+.chat-container {
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
-  }
-  
-  .chat-messages {
+}
+
+.chat-messages {
     max-height: 300px;
     overflow-y: scroll;
-  }
-  
-  .chat-message {
+}
+
+.chat-message {
     margin: 10px 0;
-  }
-  
-  .user-message {
-    background-color: #e2f7ff;
-    padding: 5px 10px;
-    border-radius: 10px;
-    align-self: flex-end;
-  }
-  
-  .other-message {
-    background-color: #f5f5f5;
-    padding: 5px 10px;
-    border-radius: 10px;
-  }
-  
-  .chat-input {
+}
+
+.user-message {
+    text-align: right;
+}
+
+.other-message {
+    text-align: left;
+}
+
+.chat-input {
     display: flex;
     margin-top: 10px;
-  }
-  
-  @media (max-width: 767px) {
+}
+
+@media (max-width: 767px) {
     .chat-input {
-      flex-direction: column;
+        flex-direction: column;
     }
-  
+
     .chat-input input {
-      margin-top: 10px;
+        margin-top: 10px;
     }
-  }
-  </style>
+}
+</style>
   

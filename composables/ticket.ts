@@ -41,37 +41,51 @@ export const getTickets = async () => {
   return ticketsList;
 };
 
-export const createTicket = async (
-  subject: string,
-  message: string,
-  course: string
-) => {
+export const createTicket = async (subject: any, message: any, course: any) => {
   const userId = uid().value;
-
-  const data = {
-    subject,
-    message,
-    course,
-    userId,
-  };
-
-  const docRef = await addDoc(ticketCol, data);
-  const docId = docRef.id; // Get the document ID
   let dateTime = new Date();
-  console.log("Document written with ID:", docId);
 
-  // Add the document ID to the data
-  const dataWithId = {
-    ...data,
-    docId,
-    dateTime,
+  const ticketData = {
+    subject: subject,
+    course: course,
+    userId: userId,
+    status: dateTime,
   };
-  await updateDoc(docRef, dataWithId);
+
+  const subMessageData = {
+    message: message,
+    createdAt: dateTime,
+    userId: userId,
+  };
+
+  // Add the ticket document to the "tickets" collection
+  const ticketRef = await addDoc(collection(db, "tickets"), ticketData);
+  const ticketId = ticketRef.id; // Get the ticket document ID
+
+  // Add the sub-message document to the "sub_messages" sub-collection under the ticket document
+  const subMessageRef = await addDoc(
+    collection(ticketRef, "ticket_conversation"),
+    subMessageData
+  );
+  const subMessageId = subMessageRef.id; // Get the sub-message document ID
+
+  console.log("Ticket document written with ID:", ticketId);
+  console.log("Sub-message document written with ID:", subMessageId);
+
+  // Update the ticket document with the sub-message ID and timestamp
+  const dataWithIds = {
+    ...ticketData,
+    docId: ticketId,
+    dateTime,
+    subMessageId: subMessageId,
+  };
+  await updateDoc(doc(db, "tickets", ticketId), dataWithIds);
+
   return true;
 };
 
 export const deleteTicket = async (ticketId: string) => {
-  console.log("ticket id",ticketId)
+  console.log("ticket id", ticketId);
   try {
     const docRef = doc(db, "tickets", ticketId);
     const ref = await deleteDoc(docRef);
@@ -82,3 +96,51 @@ export const deleteTicket = async (ticketId: string) => {
     return error;
   }
 };
+
+export const getTicketConversation = async (
+  ticketId: string
+): Promise<SubMessage[]> => {
+  try {
+    const subMessagesQuery = query(
+      collection(db, "tickets", ticketId, "ticket_conversation")
+    );
+    const subMessagesSnapshot = await getDocs(subMessagesQuery);
+    const subMessages: SubMessage[] = [];
+    subMessagesSnapshot.forEach((doc) => {
+      subMessages.push({ id: doc.id, ...doc.data() } as SubMessage);
+    });
+    return subMessages;
+  } catch (error) {
+    console.error("Error fetching ticket conversation:", error);
+    throw error;
+  }
+};
+
+export const sendMessageToTicket = async (ticketId:any, message:any) => {
+  const userId = uid().value;
+  const subMessageData = {
+    message: message,
+    createdAt: new Date().toISOString(),
+    userId: userId,
+  };
+
+  try {
+    // Add the sub-message document to the "sub_messages" sub-collection under the ticket document
+    const subMessageRef = await addDoc(collection(db, 'tickets', ticketId, 'ticket_conversation'), subMessageData);
+    const subMessageId = subMessageRef.id; // Get the sub-message document ID
+
+    console.log("Sub-message document written with ID:", subMessageId);
+    
+    return true;
+  } catch (error) {
+    console.error("Error sending message:", error);
+    throw error;
+  }
+};
+
+interface SubMessage {
+  id: string;
+  message: string;
+  createdAt: string;
+  userId: string;
+}
