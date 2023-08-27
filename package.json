@@ -26,6 +26,7 @@
     "vue3-apexcharts": "1.4.1",
     "vue3-perfect-scrollbar": "1.6.0",
     "vuetify": "3.0.1",
+    "vuex": "^4.0.2",
     "yup": "^0.32.11"
   },
   "devDependencies": {

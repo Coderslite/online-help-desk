@@ -4,13 +4,13 @@
             <div class="col-md-8">
                 <h1 class="text-left">Ticket History</h1>
                 <div class="chat-container">
-                    <div class="chat-messages">
+                    <h1 v-if="loading" class="text-center">Loading.......</h1>
+                    <div v-if="!loading" class="chat-messages">
                         <div v-for="(message, index) in messages" :key="message.id" class="chat-message">
                             <Ticket :message="message"
                                 :class="message.userId == uid().value ? `user-message` : `other-message`" />
                         </div>
                     </div>
-
                 </div>
             </div>
             <div class="chat-input col-md-8">
@@ -30,6 +30,7 @@ export default {
             messages: [],
             newMessage: "",
             ticketId: "",
+            loading:true,
         };
     },
     methods: {
@@ -39,6 +40,8 @@ export default {
                 console.log("messages", this.messages)
             } catch (error) {
                 console.log(error)
+            }finally{
+                this.loading =false;
             }
         },
         async sendMessage() {

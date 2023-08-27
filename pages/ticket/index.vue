@@ -22,7 +22,7 @@
             <div v-if="loading" class="spinner-border text-center d-flex" role="status">
             </div>
             <tbody>
-                <tr v-for="(item, index) in ticketList" :key="item.docId">
+                <tr v-for="(item, index) in myTicketList" :key="item.docId">
                     <td class="text-left">{{ index + 1 }}</td>
                     <td class="text-left">{{ item.docId }}</td>
                     <td class="text-left">{{ item.subject }}</td>
@@ -34,34 +34,30 @@
                             <span v-else>Delete</span>
                         </button>
                     </td>
-                    <td class="text-right"><nuxt-link class="btn btn-success" :to="`${item.docId}`"><EyeIcon/></nuxt-link></td>
+                    <td class="text-right"><nuxt-link class="btn btn-success" :to="`${item.docId}`">
+                            <EyeIcon />
+                        </nuxt-link></td>
                 </tr>
             </tbody>
         </v-table>
-        <p class="text-center text-danger" v-if="ticketList.length < 1 && !loading">NO TICKET CREATED YET</p>
+        <p class="text-center text-danger" v-if="myTicketList.length < 1 && !loading">NO TICKET CREATED YET</p>
     </div>
 </template>
 <script>
+definePageMeta({
+    middleware: ['auth']
+})
+
+
 export default {
     data() {
         return {
             loading: true,
-            ticketList: [],
             deleting: 0,
+            myTicketList: []
         };
     },
     methods: {
-        async getTicket() {
-            this.loading =true;
-            try {
-                this.ticketList = await getTickets();
-                console.log("tickets", this.ticketList);
-            } catch (error) {
-                console.log(error);
-            } finally {
-                this.loading = false;
-            }
-        },
         async delTicket(ticketId) {
             try {
                 this.deleting = ticketId;
@@ -74,10 +70,21 @@ export default {
                 this.deleting = 0;
             }
         }
+        ,
+        async getTickets() {
+            this.loading =true;
+            try {
+                this.myTicketList = await getTickets()
+            } catch (error) {
+                console.log(error)
+            }finally{
+                this.loading=false
+            }
+        }
     },
     beforeMount() {
-        this.getTicket();
-    }
+        this.getTickets();  
+    },
 };
 </script>
 <style lang="scss" scoped></style>

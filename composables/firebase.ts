@@ -18,6 +18,7 @@ import {
 
 import { initializeApp } from "firebase/app";
 import { userEmail } from "./useState";
+import {getTickets} from './ticket'
 
 // const config = useRuntimeConfig();
 const firebaseConfig = {
@@ -38,12 +39,14 @@ export const initUser = async () => {
   const firebaseUser = userFirebaseUser();
   const loginEmail = userEmail();
   const loginUid = uid();
-  firebaseUser.value = auth.currentUser;
+  // firebaseUser.value = auth.currentUser;
   onAuthStateChanged(auth, (user) => {
     if (user) {
       localStorage.setItem("isLogin", "true");
       loginEmail.value = user.email;
       loginUid.value = user.uid;
+      getTickets();
+      return true;
     } else {
       console.log("auth changed", user);
       localStorage.setItem("isLogin", "false");
@@ -52,6 +55,7 @@ export const initUser = async () => {
     }
     firebaseUser.value = user;
     console.log("auth changed", user);
+    return false;
   });
 };
 
@@ -69,7 +73,9 @@ export const registerUser = async (email: any, password: any, level: any) => {
       password: password,
       level: level,
       role: "user",
+      userId:userCredential.user.uid,
     };
+    localStorage.setItem('userId',userCredential.user.uid);
     await addUser(userInfo);
   } catch (error) {
     console.error(error);
@@ -94,6 +100,7 @@ export const login = async (email: any, password: any) => {
       email,
       password
     );
+    localStorage.setItem('userId',userCredential.user.uid);
     navigateTo("/");
     return userCredential.user;
   } catch (error) {
@@ -108,6 +115,7 @@ export const logout = async () => {
     await auth.signOut();
     console.log("log out successful");
     navigateTo("/auth/login");
+    localStorage.removeItem('userId');
   } catch (error) {
     alert(error);
     throw error;
