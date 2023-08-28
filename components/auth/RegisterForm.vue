@@ -6,13 +6,22 @@ export default {
             email: '',
             password: '',
             level: '',
+            loading: false,
         }
     }
     ,
     methods: {
         async register() {
-            const user = await registerUser(this.email, this.password, this.level);
-            console.log(user);
+            this.loading = true;
+            console.log(this.loading)
+            try {
+                await registerUser(this.email, this.password, this.level);
+            } catch (error) {
+                console.log(error)
+            } finally {
+                this.loading = false;
+                console.log(this.loading)
+            }
         }
     }
 }
@@ -38,7 +47,10 @@ export default {
             </v-select>
         </v-col>
         <v-col cols="12">
-            <v-btn color="primary" size="large" block flat @click="register">Sign up</v-btn>
+            <v-btn color="primary" size="large" block flat @click="register">
+                <span v-if="loading" class="spinner-border text-center d-flex" role="status"></span>
+                <span v-if="!loading">Sign up</span>
+            </v-btn>
         </v-col>
     </v-row>
 </template>

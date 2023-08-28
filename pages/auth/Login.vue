@@ -15,7 +15,7 @@ definePageMeta({
                                 <!-- <LayoutFullLogo /> -->
                                 <h4>Online Help Desk</h4>
                             </div>
-                            <div class="text-body-1 text-muted text-center mb-3">Your Social Campaigns</div>
+                            <div class="text-body-1 text-muted text-center mb-3">Unicross Online Help Desk for Computer science department</div>
                             <AuthLoginForm />
                             <h6 class="text-h6 text-muted font-weight-medium d-flex justify-center align-center mt-3">
                                 New to Modernize?

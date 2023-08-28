@@ -1,8 +1,10 @@
 <script setup lang="ts">
 import { ref, shallowRef } from 'vue';
 import sidebarItems from '@/components/layout/full/vertical-sidebar/sidebarItem';
+import adminSidebarItems from '@/components/layout/full/vertical-sidebar/adminSidebarItem';
 import { Menu2Icon } from 'vue-tabler-icons';
-const sidebarMenu = shallowRef(sidebarItems);
+const loginType = localStorage.getItem('loginType');
+const sidebarMenu = shallowRef(loginType=='admin'?adminSidebarItems: sidebarItems);
 const sDrawer = ref(true);
 </script>
 

@@ -18,7 +18,7 @@ import {
 
 import { initializeApp } from "firebase/app";
 import { userEmail } from "./useState";
-import {getTickets} from './ticket'
+import { getTickets } from "./ticket";
 
 // const config = useRuntimeConfig();
 const firebaseConfig = {
@@ -73,12 +73,14 @@ export const registerUser = async (email: any, password: any, level: any) => {
       password: password,
       level: level,
       role: "user",
-      userId:userCredential.user.uid,
+      userId: userCredential.user.uid,
     };
-    localStorage.setItem('userId',userCredential.user.uid);
+    localStorage.setItem("userId", userCredential.user.uid);
     await addUser(userInfo);
+    localStorage.setItem("logiinType", "user");
   } catch (error) {
     console.error(error);
+    alert(error);
     throw error;
   }
 };
@@ -100,8 +102,15 @@ export const login = async (email: any, password: any) => {
       email,
       password
     );
-    localStorage.setItem('userId',userCredential.user.uid);
-    navigateTo("/");
+    const userCol = collection(db, "users");
+    const q = query(userCol, where("email", "==", email));
+    const ticketsSnapshot = await getDocs(q);
+    const ticketsList = ticketsSnapshot.docs.map((doc) => doc.data());
+    const type = ticketsList[0].role;
+    console.log("loginType is: ", type);
+    localStorage.setItem("loginType", type);
+    localStorage.setItem("userId", userCredential.user.uid);
+    type == "admin" ? navigateTo("/admin/") : navigateTo("/");
     return userCredential.user;
   } catch (error) {
     alert(error);
@@ -115,7 +124,8 @@ export const logout = async () => {
     await auth.signOut();
     console.log("log out successful");
     navigateTo("/auth/login");
-    localStorage.removeItem('userId');
+    localStorage.removeItem("userId");
+    localStorage.removeItem("loginType");
   } catch (error) {
     alert(error);
     throw error;

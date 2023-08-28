@@ -30,7 +30,7 @@ const ticketCol = collection(db, "tickets");
 
 export const getTickets = async () => {
   const userId = localStorage.getItem("userId");
-  console.log(userId)
+  console.log(userId);
   const ticket = ticketList();
   const q = query(
     ticketCol,
@@ -40,7 +40,21 @@ export const getTickets = async () => {
   const ticketsSnapshot = await getDocs(q);
   const ticketsList = ticketsSnapshot.docs.map((doc) => doc.data());
   ticket.value = ticketsList;
-  console.log(ticketsList)
+  console.log(ticketsList);
+  return ticketsList;
+};
+
+export const getAllTickets = async (category: any) => {
+  const ticket = ticketList();
+  const q = query(
+    ticketCol,
+    where("status", "==", category),
+    orderBy("dateTime")
+  );
+  const ticketsSnapshot = await getDocs(category == "" ? ticketCol : category=='All'?ticketCol: q);
+  const ticketsList = ticketsSnapshot.docs.map((doc) => doc.data());
+  ticket.value = ticketsList;
+  console.log(ticketsList);
   return ticketsList;
 };
 
@@ -52,7 +66,7 @@ export const createTicket = async (subject: any, message: any, course: any) => {
     subject: subject,
     course: course,
     userId: userId,
-    status: dateTime,
+    status: "Open",
   };
 
   const subMessageData = {
