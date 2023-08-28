@@ -6,7 +6,7 @@
                 <div class="chat-container">
                     <h1 v-if="loading" class="text-center">Loading.......</h1>
                     <div v-if="!loading" class="chat-messages">
-                        <div v-for="(message, index) in messages" :key="message.id" class="chat-message">
+                        <div ref="chatContainer" v-for="(message, index) in messages" :key="message.id" class="chat-message">
                             <Ticket :message="message"
                                 :class="message.userId == uid().value ? `user-message` : `other-message`" />
                         </div>
@@ -21,50 +21,94 @@
         </div>
     </div>
 </template>
-  
+
 <script>
-import Ticket from '@/components/ticket/ticket.vue'
+import { onSnapshot, collection, query, orderBy,getFirestore } from 'firebase/firestore'; // Import necessary Firestore functions
+import { initializeApp } from "firebase/app";
+
+
+const firebaseConfig = {
+  apiKey: "AIzaSyAcxuzMwl_j0ePCIZvTHv-JIlxs_SQjBMA",
+  authDomain: "online-help-desk-3aace.firebaseapp.com",
+  projectId: "online-help-desk-3aace",
+  storageBucket: "online-help-desk-3aace.appspot.com",
+  messagingSenderId: "371284053019",
+  appId: "1:371284053019:web:b90037d0faca2c3a193cbe",
+};
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
 export default {
     data() {
         return {
             messages: [],
             newMessage: "",
             ticketId: "",
-            loading:true,
+            loading: true,
+            unsubscribeRealtime: null
         };
     },
     methods: {
         async getConversation(ticketId) {
             try {
-                this.messages = await getTicketConversation(ticketId);
-                console.log("messages", this.messages)
+                const subMessagesQuery = query(
+                    collection(db, "tickets", ticketId, "ticket_conversation"),
+                    orderBy("createdAt")
+                );
+
+                const unsubscribe = onSnapshot(subMessagesQuery, (snapshot) => {
+                    this.messages = snapshot.docs.map((doc) => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    this.loading = false;
+
+                    this.$nextTick(() => {
+                        setTimeout(() => {
+                            this.scrollToLastMessage();
+                        }, 100);
+                    });
+                });
+
+                this.unsubscribeRealtime = unsubscribe;
             } catch (error) {
-                console.log(error)
-            }finally{
-                this.loading =false;
+                console.log(error);
+            } finally {
+                this.loading = false;
             }
         },
         async sendMessage() {
             try {
                 await sendMessageToTicket(this.ticketId, this.newMessage);
-                this.getConversation(this.ticketId)
-                this.newMessage = ''
+                this.newMessage = '';
             } catch (error) {
-                alert(error)
+                alert(error);
+            }
+        },
+        scrollToLastMessage() {
+            const chatContainer = this.$refs.chatContainer;
+            if (chatContainer) {
+                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         }
     },
     watch: {
         '$route.params.id': {
             handler(newId, oldId) {
+                if (this.unsubscribeRealtime) {
+                    this.unsubscribeRealtime();
+                }
                 this.ticketId = newId;
-                console.log("ticketID", this.ticketId);
                 this.getConversation(this.ticketId);
             },
-            immediate: true // Trigger the handler immediately on component creation
+            immediate: true
         }
     },
-
+    beforeDestroy() {
+        if (this.unsubscribeRealtime) {
+            this.unsubscribeRealtime();
+        }
+    }
 };
 </script>
   
@@ -77,7 +121,7 @@ export default {
 }
 
 .chat-messages {
-    max-height: 300px;
+    max-height: 60vh;
     overflow-y: scroll;
 }
 

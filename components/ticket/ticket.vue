@@ -2,9 +2,9 @@
     <div class="pb-1">
         <small class="col-md-6 text-right" v-if="userId == message.userId">From ME</small><br>
         <p :class="message.userId != userId ? `badge-secondary p-1` : `badge-primary p-1`" style="display:inline">
-            {{ message.message }}</p><br>
-        <small class="col-md-6 text-right">{{ formatDate(message.createdAt) }}</small><br>
-        <small v-if="userId == message.userId && loginType=='admin'">sent by HOD {{ loginType }}</small>
+            {{ message.message }}<br>
+            <small class="col-md-6 text-right">{{ formatDate(message.createdAt) }}</small><br></p>        
+        <small v-if="userId != message.userId && loginType=='user'"><i>From: HOD</i></small>
     </div>
 </template>
 
