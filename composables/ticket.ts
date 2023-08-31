@@ -51,7 +51,9 @@ export const getAllTickets = async (category: any) => {
     where("status", "==", category),
     orderBy("dateTime")
   );
-  const ticketsSnapshot = await getDocs(category == "" ? ticketCol : category=='All'?ticketCol: q);
+  const ticketsSnapshot = await getDocs(
+    category == "" ? ticketCol : category == "All" ? ticketCol : q
+  );
   const ticketsList = ticketsSnapshot.docs.map((doc) => doc.data());
   ticket.value = ticketsList;
   console.log(ticketsList);
@@ -167,6 +169,20 @@ export const sendMessageToTicket = async (ticketId: any, message: any) => {
   } catch (error) {
     console.error("Error sending message:", error);
     throw error;
+  }
+};
+
+export const updateTicketStatus = async (ticketId: any, status: any) => {
+  try {
+   await updateDoc(doc(db, "tickets", ticketId), {
+      status: status,
+    });
+    console.log("updated");
+    console.log(ticketId,status)
+    return true;
+  } catch (error) {
+    alert(error);
+    return false;
   }
 };
 
