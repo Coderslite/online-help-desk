@@ -1,8 +1,8 @@
 <template>
     <div>
-  <div class="row">
-    <h1 class="col-md-4">Tickets Created</h1>
-        <div class="col-md-8">
+        <div class="row">
+            <h1 class="col-md-4">Tickets Created</h1>
+            <div class="col-md-8">
                 <label for="filter">Filter Order</label>
                 <select id="filter" class="form-control mb-5" v-on:change="getTickets" v-model="filter" value="All">
                     <option value="All">All</option>
@@ -10,47 +10,54 @@
                     <option value="Closed">Closed</option>
                 </select>
             </div>
-  </div>
+        </div>
         <!-- <nuxt-link to="/ticket/create-ticket" class="btn btn-primary mr-auto">New</nuxt-link> -->
         <v-table height="300px">
             <thead>
                 <tr>
-                    <th class="text-left">
+                    <th>
                         ID
                     </th>
-                    <th class="text-left">
+                    <th>
                         Ticket ID
                     </th>
-                    <th class="text-left">
+                    <th>
                         Subject
                     </th>
-                    <th class="text-right">Action</th>
-                    <th class="text-right">Delete</th>
-                    <th class="text-right">View Ticket</th>
+                    <th>Status</th>
+                    <th>Action</th>
+                    <th>Delete</th>
+                    <th>View Ticket</th>
                 </tr>
             </thead>
             <div v-if="loading" class="spinner-border text-center d-flex" role="status">
             </div>
             <tbody>
                 <tr v-for="(item, index) in myTicketList" :key="item.docId">
-                    <td class="text-left">{{ index + 1 }}</td>
-                    <td class="text-left">{{ item.docId }}</td>
-                    <td class="text-left">{{ item.subject }}</td>
-                    <td class="text-right">
-                        <button v-if="item.status == 'Open'" class="btn btn-success" @click="updateTicketStatus(item.docId,'Closed')">Close</button>
-                        <button v-if="item.status != 'Open'" class="btn btn-danger" @click="updateTicketStatus(item.docId,'Open')">Re-open</button>
+                    <td>{{ index + 1 }}</td>
+                    <td>{{ item.docId }}</td>
+                    <td>{{ item.subject }}</td>
+                    <td>{{ item.status }}</td>
+                    <td>
+                        <button v-if="item.status == 'Open'" class="btn btn-warning"
+                            @click="updateTicketStatus(item.docId, 'Closed')">Close Ticket</button>
+                        <button v-if="item.status != 'Open'" class="btn btn-danger"
+                            @click="updateTicketStatus(item.docId, 'Open')">Re-open Ticket</button>
                     </td>
-                    <td class="text-right">
+                    <td>
                         <button class="btn btn-danger" @click="delTicket(item.docId)">
                             <div v-if="deleting === item.docId" class="spinner-border text-center d-flex" role="status">
                             </div>
                             <span v-else>Delete</span>
                         </button>
                     </td>
-                    <td class="text-right"><nuxt-link class="btn btn-success" :to="`${item.docId}`" v-if="item.status !='Closed'" >
+                    <td><nuxt-link class="btn btn-success" :to="`${item.docId}`" v-if="item.status != 'Closed'">
                             <EyeIcon />
                         </nuxt-link>
-                    <span v-if="item.status =='Closed'">Answered <span><CheckIcon/><CheckIcon/></span></span>
+                        <span v-if="item.status == 'Closed'">Answered <span>
+                                <CheckIcon />
+                                <CheckIcon />
+                            </span></span>
                     </td>
                 </tr>
             </tbody>
@@ -72,7 +79,7 @@ export default {
             loading: true,
             deleting: 0,
             myTicketList: [],
-            filter: '',
+            filter: 'All',
         };
     },
     methods: {

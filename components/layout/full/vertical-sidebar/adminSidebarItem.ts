@@ -46,11 +46,11 @@ const sidebarItem: menu[] =
             icon: LayoutDashboardIcon,
             to: "/admin/ticket/",
           },
-          {
-            title: "Levels",
-            icon: LayoutDashboardIcon,
-            to: "/admin/levels",
-          },
+          // {
+          //   title: "Levels",
+          //   icon: LayoutDashboardIcon,
+          //   to: "/admin/levels",
+          // },
           {
             title: "Courses",
             icon: LayoutDashboardIcon,

@@ -30,13 +30,18 @@ const courseCol = collection(db, "courses");
 let dateTime = new Date().toISOString();
 
 export const getAllCourses = async () => {
-  const courseSnapshot = await getDocs(courseCol);
+  const q = query(courseCol, orderBy("createdAt"));
+  const courseSnapshot = await getDocs(q);
   const courseList = courseSnapshot.docs.map((doc) => doc.data());
   return courseList;
 };
 
 export const getCourseByName = async (courseName: string) => {
-  const q = query(courseCol, where("courseTitle", "==", courseName));
+  const q = query(
+    courseCol,
+    where("courseTitle", "==", courseName),
+    orderBy("createdAt")
+  );
   const courseSnapshot = await getDocs(q);
   const courseList = courseSnapshot.docs.map((doc) => doc.data());
   return courseList;
@@ -50,7 +55,7 @@ export const addCourse = async (data: any) => {
       docId: docRef.id,
     };
     await updateDoc(doc(db, "courses", docRef.id), updateData);
-    console.log("course added");
+    alert("Course Added");
   } catch (error) {
     console.log(error);
   }

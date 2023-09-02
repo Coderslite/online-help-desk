@@ -19,7 +19,10 @@
                     <td>{{ course.courseTitle }}</td>
                     <td>{{ course.courseCode }}</td>
                     <td>{{ course.lecturer }}</td>
-                    <td><button class="btn btn-danger" @click="deleteCours(course.docId)">Delete</button></td>
+                    <td><button class="btn btn-danger" @click="deleteCours(course.docId)">
+                        <div v-if="deleting === course.docId" class="spinner-border text-center d-flex" role="status">
+                            </div>
+                            <span v-else>Delete</span></button></td>
                     <!-- <td><button class="btn btn-primary">Edit</button></td> -->
                 </tr>
             </tbody>
@@ -34,6 +37,7 @@ export default {
         return {
             courses: [],
             loading: true,
+            deleting:0,
         }
     },
     methods: {
@@ -49,11 +53,14 @@ export default {
         },
         async deleteCours(courseId) {
             console.log(courseId)
+            this.deleting=courseId;
             try {
                 await deleteCourse(courseId)
                 this.getCourses()
             } catch (error) {
                 console.log(error);
+            }finally{
+                this.deleting=0;
             }
         }
     },

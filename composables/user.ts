@@ -132,11 +132,11 @@ export const logout = async () => {
   }
 };
 
-
-export const getAllUsers =async () => {
-  const userCol = collection(db,'users');
-  const q = query(userCol,where('role','==','user'))
-  const userSnapshot = await getDocs(q);
-  const usersList = userSnapshot.docs.map((doc)=>doc.data());
+export const getAllUsers = async (type: string) => {
+  const userCol = collection(db, "users");
+  console.log(type);
+  const q = query(userCol, where("role", "==", type));
+  const userSnapshot = await getDocs(type == "All" ? userCol : q);
+  const usersList = userSnapshot.docs.map((doc) => doc.data());
   return usersList;
-}
+};

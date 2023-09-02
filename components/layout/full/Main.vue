@@ -5,7 +5,7 @@ import adminSidebarItems from '@/components/layout/full/vertical-sidebar/adminSi
 import { Menu2Icon } from 'vue-tabler-icons';
 const loginType = localStorage.getItem('loginType');
 const sidebarMenu = shallowRef(loginType=='admin'?adminSidebarItems: sidebarItems);
-const sDrawer = ref(true);
+const sDrawer = ref(false);
 </script>
 
 <template>
@@ -13,7 +13,8 @@ const sDrawer = ref(true);
     <v-navigation-drawer left elevation="0"  app class="leftSidebar"  v-model="sDrawer">
         <!---Logo part -->
         <div class="pa-5">
-            <LayoutFullLogo />
+            <!-- <LayoutFullLogo /> -->
+            <h4 class="text-left">Online Help<br>Desk</h4>
         </div>
         <!-- ---------------------------------------------- -->
         <!---Navigation -->
