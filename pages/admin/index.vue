@@ -7,7 +7,7 @@
                     <div class="card-header">
                         <h3>Total Users</h3>
                         <div class="row justify-content-between">
-                            <h1 class="col-6">43</h1>
+                            <h1 class="col-6">{{ users.length }}</h1>
                             <p class="col-6"><nuxt-link to="" class="btn text-white">View Users</nuxt-link></p>
                         </div>
                     </div>
@@ -72,7 +72,27 @@
     </div>
 </template>
 
-<script setup>
+<script>
+export default {
+    data() {
+        return {
+            users: []
+        }
+    },
+    methods: {
+        async getUsers() {
+            try {
+                this.users = await getAllUsers();
+                console.log(this.users)
+            } catch (error) {
+                console.log(error)
+            }
+        }
+    },
+    beforeMount() {
+        this.getUsers();
+    }
+}
 
 </script>
 

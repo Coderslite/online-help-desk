@@ -131,3 +131,12 @@ export const logout = async () => {
     throw error;
   }
 };
+
+
+export const getAllUsers =async () => {
+  const userCol = collection(db,'users');
+  const q = query(userCol,where('role','==','user'))
+  const userSnapshot = await getDocs(q);
+  const usersList = userSnapshot.docs.map((doc)=>doc.data());
+  return usersList;
+}

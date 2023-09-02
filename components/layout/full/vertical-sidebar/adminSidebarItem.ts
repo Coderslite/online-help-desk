@@ -54,7 +54,7 @@ const sidebarItem: menu[] =
           {
             title: "Courses",
             icon: LayoutDashboardIcon,
-            to: "/admin/courses",
+            to: "/admin/courses/",
           },
       ]
     //    [
