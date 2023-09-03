@@ -48,7 +48,7 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="col-md-4 mb-3">
                 <div class="card bg-warning">
                     <div class="card-header">
@@ -68,6 +68,7 @@
 definePageMeta({
     middleware: ['auth']
 })
+
 
 export default {
     data() {
@@ -119,6 +120,10 @@ export default {
         }
     },
     beforeMount() {
+        const type = localStorage.getItem("loginType");
+        if (type == 'user') {
+            navigateTo('/')
+        }
         this.fetch()
     }
 }

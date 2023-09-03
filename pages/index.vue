@@ -11,6 +11,12 @@ definePageMeta({
     middleware:['auth']
 })
 
+const type = localStorage.getItem("loginType");
+
+if(type=='admin'){
+    navigateTo('admin/')
+}
+
 const firebaseUser = userFirebaseUser();
 const email = userEmail();
 </script>

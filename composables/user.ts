@@ -77,7 +77,7 @@ export const registerUser = async (email: any, password: any, level: any) => {
     };
     localStorage.setItem("userId", userCredential.user.uid);
     await addUser(userInfo);
-    localStorage.setItem("logiinType", "user");
+    localStorage.setItem("loginType", "user");
   } catch (error) {
     console.error(error);
     alert(error);
