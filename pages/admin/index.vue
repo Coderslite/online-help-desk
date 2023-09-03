@@ -42,7 +42,7 @@
                     <div class="card-header">
                         <h3>Answered Tickets</h3>
                         <div class="row justify-content-between">
-                            <h1 class="col-6">{{ openTickets.length }}</h1>
+                            <h1 class="col-6">{{ closedTickets.length }}</h1>
                             <p class="col-6"><nuxt-link to="ticket/" class="btn text-white">View Tickets</nuxt-link></p>
                         </div>
                     </div>
@@ -53,7 +53,7 @@
                     <div class="card-header">
                         <h3>Unanswered Tickets</h3>
                         <div class="row justify-content-between">
-                            <h1 class="col-6">{{ closedTickets.length }}</h1>
+                            <h1 class="col-6">{{ openTickets.length }}</h1>
                             <p class="col-6"><nuxt-link to="ticket/" class="btn text-white">View Tickets</nuxt-link></p>
                         </div>
                     </div>
