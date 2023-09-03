@@ -23,6 +23,10 @@
 </template>
 
 <script>
+definePageMeta({
+    middleware: ['auth']
+})
+
 import { onSnapshot, collection, query, orderBy, getFirestore } from 'firebase/firestore'; // Import necessary Firestore functions
 import { initializeApp } from "firebase/app";
 

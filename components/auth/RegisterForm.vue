@@ -42,8 +42,8 @@ export default {
             <v-text-field variant="outlined" v-model="password" type="password" hide-details color="primary"></v-text-field>
         </v-col>
         <v-col cols="12">
-            <v-label class="font-weight-bold mb-1" hide-details color="primary" variant="outlined">Level</v-label>
-            <v-select v-model="level" label="Select Level" :items="['100', '200', '300', '400']">
+            <v-label class="font-weight-bold mb-1" hide-details color="primary" >Level</v-label>
+            <v-select v-model="level" label="Select Level" variant="outlined" :items="['100', '200', '300', '400']">
             </v-select>
         </v-col>
         <v-col cols="12">

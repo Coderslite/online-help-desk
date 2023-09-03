@@ -36,10 +36,10 @@ export const getAllCourses = async () => {
   return courseList;
 };
 
-export const getCourseByName = async (courseName: string) => {
+export const getCourseByLevel = async (level: string) => {
   const q = query(
     courseCol,
-    where("courseTitle", "==", courseName),
+    where("level", "==", level),
     orderBy("createdAt")
   );
   const courseSnapshot = await getDocs(q);

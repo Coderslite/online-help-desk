@@ -3,7 +3,7 @@
         <h1>Create Tickets</h1>
         <v-col cols="12">
             <v-label class="font-weight-bold mb-1">Course</v-label>
-            <v-select v-model="course" label="Course" :items="courses">
+            <v-select v-model="course" label="Course" :items="courses" variant="outlined">
             </v-select>
         </v-col>
         <v-col cols="12">
@@ -17,8 +17,9 @@
         <v-col cols="12" class="pt-0">
             <v-btn color="primary" size="large" block flat @click="createTickets">
                 <div v-if="loading" class="spinner-border text-center d-flex" role="status">
-                            </div>
-                <span v-if="!loading">Create Ticket</span></v-btn>
+                </div>
+                <span v-if="!loading">Create Ticket</span>
+            </v-btn>
         </v-col>
     </v-row>
 </template>
@@ -29,9 +30,9 @@ export default {
         return {
             subject: '',
             message: '',
-            courses: ['English', 'Maths', 'Chemistry', 'Physics'],
+            courses: [],
             course: '',
-            loading:false,
+            loading: false,
 
         }
     }
@@ -40,7 +41,7 @@ export default {
         async createTickets() {
             try {
                 this.loading = true;
-                await createTicket(this.subject,this.message,this.course);
+                await createTicket(this.subject, this.message, this.course);
                 this.subject = '';
                 this.message = '';
                 this.course = '';
@@ -48,10 +49,30 @@ export default {
             } catch (error) {
                 console.log(error);
                 alert(error)
-            }finally{
-                this.loading=false
+            } finally {
+                this.loading = false
+            }
+        },
+        async getCourses() {
+            this.loading = true;
+            const array = [];
+            try {
+                this.array = await getAllCourses();
+                console.log("array",this.array)
+                this.array.forEach(element => {
+                    this.courses.push(element['courseTitle'])
+                });
+                console.log("courses",this.courses)
+            } catch (error) {
+
+            }
+            finally {
+                this.loading = false;
             }
         }
+    },
+    mounted() {
+        this.getCourses()
     }
 }
 

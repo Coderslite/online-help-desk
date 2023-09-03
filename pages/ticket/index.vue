@@ -9,12 +9,11 @@
                         ID
                     </th>
                     <th class="text-left">
-                        Ticket ID
+                        Course Title
                     </th>
                     <th class="text-left">
                         Subject
                     </th>
-                    <th class="text-right">EDIT</th>
                     <th class="text-right">DELETE</th>
                     <th class="text-right">View Ticket</th>
                 </tr>
@@ -24,9 +23,8 @@
             <tbody>
                 <tr v-for="(item, index) in myTicketList" :key="item.docId">
                     <td class="text-left">{{ index + 1 }}</td>
-                    <td class="text-left">{{ item.docId }}</td>
+                    <td class="text-left">{{ item.course}}</td>
                     <td class="text-left">{{ item.subject }}</td>
-                    <td class="text-right"><button class="btn btn-primary">Edit</button></td>
                     <td class="text-right">
                         <button class="btn btn-danger" @click="delTicket(item.docId)">
                             <div v-if="deleting === item.docId" class="spinner-border text-center d-flex" role="status">

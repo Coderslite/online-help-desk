@@ -6,7 +6,8 @@
                 <div class="chat-container">
                     <h1 v-if="loading" class="text-center">Loading.......</h1>
                     <div v-if="!loading" class="chat-messages">
-                        <div ref="chatContainer" v-for="(message, index) in messages" :key="message.id" class="chat-message">
+                        <div ref="chatContainer" v-for="(message, index) in messages" :key="message.id"
+                            class="chat-message">
                             <Ticket :message="message"
                                 :class="message.userId == uid().value ? `user-message` : `other-message`" />
                         </div>
@@ -23,17 +24,21 @@
 </template>
 
 <script>
-import { onSnapshot, collection, query, orderBy,getFirestore } from 'firebase/firestore'; // Import necessary Firestore functions
+definePageMeta({
+    middleware: ['auth']
+})
+
+import { onSnapshot, collection, query, orderBy, getFirestore } from 'firebase/firestore'; // Import necessary Firestore functions
 import { initializeApp } from "firebase/app";
 
 
 const firebaseConfig = {
-  apiKey: "AIzaSyAcxuzMwl_j0ePCIZvTHv-JIlxs_SQjBMA",
-  authDomain: "online-help-desk-3aace.firebaseapp.com",
-  projectId: "online-help-desk-3aace",
-  storageBucket: "online-help-desk-3aace.appspot.com",
-  messagingSenderId: "371284053019",
-  appId: "1:371284053019:web:b90037d0faca2c3a193cbe",
+    apiKey: "AIzaSyAcxuzMwl_j0ePCIZvTHv-JIlxs_SQjBMA",
+    authDomain: "online-help-desk-3aace.firebaseapp.com",
+    projectId: "online-help-desk-3aace",
+    storageBucket: "online-help-desk-3aace.appspot.com",
+    messagingSenderId: "371284053019",
+    appId: "1:371284053019:web:b90037d0faca2c3a193cbe",
 };
 const app = initializeApp(firebaseConfig);
 
@@ -51,6 +56,7 @@ export default {
     methods: {
         async getConversation(ticketId) {
             try {
+                this.loading=true;
                 const subMessagesQuery = query(
                     collection(db, "tickets", ticketId, "ticket_conversation"),
                     orderBy("createdAt")
